@@ -1,0 +1,32 @@
+script_name: "hey"
+script_description: "dkgjjgkjgkjg kfgjdkfjgk dfkgd kfkgjkgj"
+arguments:
+  -
+    name: "server"
+    short: "s"
+    description: "my BIG server"
+    mandatory: True
+    default: "goggle.com"
+    param: True
+  -
+    name: "portal"
+    short: "p"
+    description: "my small portal"
+    mandatory: False
+    default: "My default portal"
+    param: True
+  -
+    name: "razorize"
+    short: "r"
+    description: "whether razorizer or let it be"
+    mandatory: True
+    default: False
+    param: False
+  - 
+    name: "verbose"
+    short: "v"
+    description: "verbosion mode god"
+    mandatory: False
+    default: True
+    param: False
+

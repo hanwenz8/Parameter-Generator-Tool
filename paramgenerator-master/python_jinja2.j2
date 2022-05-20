@@ -1,0 +1,35 @@
+import json
+import sys,getopt
+
+def main(argv):
+    {% for a in arguments if a.param and a.mandatory %}{{ a.name }}=""{% endfor %}
+    {% for a in arguments if a.param and not a.mandatory %}{{ a.name }}="{{ a.default }}"{% endfor %}
+    {% for a in arguments if not a.param and a.mandatory %}{{ a.name }}=""{% endfor %}
+    {% for a in arguments if not a.param and not a.mandatory %}{{ a.name }}={{ a.default }}{% endfor %}
+
+    def help():
+        print('Usage: {{ script_name }} {% for a in arguments %}{% if not a.mandatory %}[{% endif %}-{{ a.short }}{% if a.param %} {{ a.name|upper }}{% endif %}{% if not a.mandatory %}]{% endif %} {% endfor %}[-h]')
+        print('{{ script_description }}'){% for a in arguments %}
+        print('   -{{ a.short }}, --{{ a.name }}		{% if a.mandatory %}Mandatory. {% endif %}{{ a.description }}'){% endfor %}
+        print('   -h, --help		Display help and exit')
+    try:
+        opts, args = getopt.getopt(argv,"{% for a in arguments %}{% if a.param %}{{ a.short }}:{% else %}{{ a.short }}{% endif %}{% endfor %}",[{% for a in arguments if a.param %}"{{ a.name }}="{{ "," if not loop.last }}{% endfor %}])
+    except getopt.GetoptError:
+        help()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            help()
+            sys.exit()
+{% for a in arguments %}        elif opt in ("-{{ a.short }}", "--{{ a.name }}"):
+         {{ a.name }} = arg
+{% endfor %}
+{% for a in arguments if a.mandatory %}    {{ "el" if not loop.first }}if {{ a.name }} == "":
+        print("Missing parameter {{ a.name }}")
+        help()
+        sys.exit(2)
+{% endfor %}
+if __name__ == "__main__":
+    main(sys.argv[1:])
+

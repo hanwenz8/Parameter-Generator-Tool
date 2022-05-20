@@ -1,0 +1,25 @@
+// File to store generated C++ code
+#include <iostream>
+class Foo {
+    private:
+        int age;
+        std::string gender;
+    public:
+        Foo(int a=0, std::string g=" ") : age(a), gender(g) {}
+        int get_age() const {
+            return age;
+        }
+        void set_age(int a) {
+            age = a;
+        }
+};
+
+int main () {
+    std::cout <<"{{ script_name }}" << std::endl;
+    std::cout << "{{script_description}}" << std::endl;
+    {% for a in arguments if a.param -%}
+    Foo {{ a.name }}({{ a.age }}, "{{a.gender}}");
+    int age = {{a.name}}.get_age();
+    {% endfor -%}
+    return 0;
+}

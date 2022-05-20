@@ -1,0 +1,32 @@
+script_name: "parameter generator demo"
+script_description: "This is a file that contains variable for parameter generator demo"
+arguments:
+  -
+    name: "hz"
+    age: 108
+    gender: "male"
+    mandatory: True
+    default: "raspberry PI"
+    param: True
+  -
+    name: "zs"
+    age: 28
+    gender: "male"
+    mandatory: False
+    default: True
+    param: False
+  -
+    name: "fsx"
+    age: 25
+    gender: "famale"
+    mandatory: False
+    default: "fufu is fufu"
+    param: True
+  - 
+    name: "ls"
+    age: 180
+    gender: "famale"
+    mandatory: False
+    default: True
+    param: False
+

@@ -1,0 +1,45 @@
+#!/bin/bash
+# {{ script_description }}
+{% for a in arguments if a.param and a.mandatory %}{{ a.name }}=""{% endfor %}
+{% for a in arguments if a.param and not a.mandatory %}{{ a.name }}="{{ a.default }}"{% endfor %}
+{% for a in arguments if not a.param and a.mandatory %}{{ a.name }}=""{% endfor %}
+{% for a in arguments if not a.param and not a.mandatory %}{{ a.name }}={{ a.default }}{% endfor %}
+
+function help(){
+  cat << EOF
+Usage: {{ script_name }} {% for a in arguments %}{% if not a.mandatory %}[{% endif %}-{{ a.short }}{% if a.param %} {{ a.name|upper }}{% endif %}{% if not a.mandatory %}]{% endif %} {% endfor %}[-h]
+{{ script_description }}{% for a in arguments %}
+   -{{ a.short }}, --{{ a.name }}		{% if a.mandatory %}Mandatory. {% endif %}{{ a.description }}'){% endfor %}
+   -h, --help		Display help and exit
+EOF
+}
+
+while [ $# -ge 1 ]
+do
+  case "$1" in
+    -h|--help)
+      help
+      exit 0
+      ;;
+{% for a in arguments %}
+    -{{ a.short }}|--{{ a.name }})
+      {% if a.param %}{{ a.name }}="true"{% endif %}{% if not a.param %}{{ a.name }}="$2"{% endif %}
+      {% if a.param %}shift 1{% endif %}{% if not a.param %}shift 2{% endif %}
+      ;;
+{% endfor %}
+    *)
+      help
+      echo -e "\n\nUnkown argument."
+      exit 1
+      ;;
+    esac
+done
+
+{% for a in arguments if a.mandatory %}if [ -z "${{ a.name }}" ]
+then
+  echo "Missing arguments {{ a.name }}"
+  help
+  exit 1
+fi
+
+{% endfor %}

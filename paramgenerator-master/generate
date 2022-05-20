@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+# -*- coding: utf8 -*-
+
+import os
+from sys import argv, stdin, stdout, stderr, exit
+
+import yaml
+from jinja2 import Environment, FileSystemLoader
+
+from datetime import datetime
+
+help_message = """
+Read yaml config from stdin and replace values to the jinja2 template as
+first argument.
+        stdin   arg 1
+        yaml + jinja -> stdout
+Replaced jinja template is thrown to stdout.
+Requires jinja2 and pyyaml packages (pip install jinja2 pyyaml)
+"""
+
+if __name__=="__main__":
+    if len(argv) < 2:
+        stderr.write("No template passed as first argument.\n")
+        print(help_message)
+        exit(1)
+
+    if argv[1] in ("-h", "--help"):
+        print(help_message)
+        exit(0)
+
+    tpl_path = argv[1]
+    variables = yaml.load(stdin.read())
+
+    variables['datetime_now'] = datetime.now()
+
+    path, filename = os.path.split(argv[1])
+    path = path or './'
+    tpl = Environment(loader=FileSystemLoader(path)).get_template(filename)
+
+    stdout.write(tpl.render(**variables))
